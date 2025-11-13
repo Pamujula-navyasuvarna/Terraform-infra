@@ -12,7 +12,9 @@ Name = "tf-kops-vpc"
 # Internet Gateway
 resource "aws_internet_gateway" "igw" {
 vpc_id = aws_vpc.this.id
-tags = { Name = "tf-kops-igw" }
+tags = { 
+Name = "tf-kops-igw" 
+}
 }
 
 
@@ -30,20 +32,24 @@ Name = "tf-public-${each.key}"
 
 # Private subnets (2 AZs)
 resource "aws_subnet" "private" {
-for_each = { for idx, cidr in var.private_subnets : idx => cidr }
-vpc_id = aws_vpc.this.id
-cidr_block = each.value
-availability_zone = var.azs[tonumber(each.key)]
-tags = {
-Name = "tf-private-${each.key}"
-}
+  for_each = { for idx, cidr in var.private_subnets : idx => cidr }
+
+  vpc_id            = aws_vpc.this.id
+  cidr_block        = each.value
+  availability_zone = var.azs[tonumber(each.key) % length(var.azs)]
+
+  tags = {
+    Name = "tf-private-${each.key}"
+  }
 }
 
 
 # Public route table
 resource "aws_route_table" "public" {
 vpc_id = aws_vpc.this.id
-tags = { Name = "tf-public-rt" }
+tags = { 
+Name = "tf-public-rt" 
+}
 }
 
 
@@ -66,7 +72,9 @@ route_table_id = aws_route_table.public.id
 resource "aws_eip" "nat_eip" {
 for_each = aws_subnet.public
 vpc = true
-tags = { Name = "tf-nat-eip-${each.key}" }
+tags = { 
+Name = "tf-nat-eip-${each.key}" 
+}
 }
 
 
@@ -75,14 +83,18 @@ for_each = aws_subnet.public
 allocation_id = aws_eip.nat_eip[each.key].id
 subnet_id = each.value.id
 depends_on = [aws_internet_gateway.igw]
-tags = { Name = "tf-nat-${each.key}" }
+tags = { 
+Name = "tf-nat-${each.key}" 
+}
 }
 
 # Private route tables (one per AZ/private subnet) with route to NAT in same AZ
 resource "aws_route_table" "private" {
 for_each = aws_subnet.private
 vpc_id = aws_vpc.this.id
-tags = { Name = "tf-private-rt-${each.key}" }
+tags = { 
+Name = "tf-private-rt-${each.key}" 
+}
 }
 
 
@@ -108,7 +120,9 @@ internal = false
 load_balancer_type = "application"
 subnets = [for s in aws_subnet.public : s.id]
 security_groups = [aws_security_group.alb_sg.id]
-tags = { Name = "tf-app-alb" }
+tags = { 
+Name = "tf-app-alb" 
+}
 }
 
 
