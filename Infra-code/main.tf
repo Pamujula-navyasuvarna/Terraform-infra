@@ -101,3 +101,39 @@ subnet_id = each.value.id
 route_table_id = aws_route_table.private[each.key].id
 }
 
+########################## ALB (Application Load Balancer) ##########################
+resource "aws_lb" "app_alb" {
+name = "tf-app-alb"
+internal = false
+load_balancer_type = "application"
+subnets = [for s in aws_subnet.public : s.id]
+security_groups = [aws_security_group.alb_sg.id]
+tags = { Name = "tf-app-alb" }
+}
+
+
+resource "aws_lb_target_group" "app_tg" {
+name = "tf-app-tg"
+port = 80
+protocol = "HTTP"
+vpc_id = aws_vpc.this.id
+health_check {
+path = "/"
+interval = 30
+timeout = 5
+healthy_threshold = 2
+unhealthy_threshold = 2
+}
+}
+
+resource "aws_lb_listener" "http" {
+load_balancer_arn = aws_lb.app_alb.arn
+port = "80"
+protocol = "HTTP"
+default_action {
+type = "forward"
+target_group_arn = aws_lb_target_group.app_tg.arn
+}
+}
+
+
