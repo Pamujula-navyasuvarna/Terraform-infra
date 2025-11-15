@@ -54,5 +54,3 @@ NOTE: The above sets desired node count to 5. To enable autoscaling (min=3,max=6
  - Ensure you have the correct IAM permissions (kops needs AWS IAM, EC2, ELB, S3 etc.).
  - If you want kops to manage the VPC, you can skip creating VPC in Terraform and let kops create it, but since you asked to provision VPC in terraform, pass --vpc to kops.
 
-
-# End of document
