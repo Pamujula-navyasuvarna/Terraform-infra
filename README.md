@@ -1,6 +1,6 @@
 I want to deploy an application.
 So, I have to create a infra using terraform. 
-Infra contains: 1 vpc with 2 public and private subnets in 2 availability zones. 
+Infra contains: 1 vpc with 2 public and 4 private subnets in 2 availability zones. 
 It should have IGW for VPC, 
 1 public route table for both public subnets with are available in 2 availability zones, 
 private route tables for east private subnet, 
