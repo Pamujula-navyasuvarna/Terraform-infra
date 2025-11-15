@@ -30,7 +30,8 @@ Now if we want to access application we need application load balancer.
 
 
 4) Create kops cluster using existing VPC & private subnets (example):
- kops create cluster --name ${var.cluster_name} --state ${KOPS_STATE_BUCKET} --cloud aws --vpc ${VPC_ID} --zones ${var.azs[0]},${var.azs[1]} --yes --node-count 5 --node-size t3.medium --master-count 2 --master-size t3.medium --networking canal
+
+kops create cluster --name ${var.cluster_name} --state ${KOPS_STATE_BUCKET} --cloud aws --vpc ${VPC_ID} --zones ${var.azs[0]},${var.azs[1]} --yes --node-count 5 --node-size t3.medium --master-count 2 --master-size t3.medium --networking canal
 
 
 NOTE: The above sets desired node count to 5. To enable autoscaling (min=3,max=6), edit the nodes instance group:
